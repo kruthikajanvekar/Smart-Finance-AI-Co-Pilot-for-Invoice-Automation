@@ -1,0 +1,27 @@
+# Core dependencies
+streamlit==1.28.1
+fastapi==0.104.1
+uvicorn==0.24.0
+
+# LLM and AI
+google-generativeai==0.3.2
+langchain==0.0.334
+langchain-google-genai==0.0.6
+
+# Vector DB and RAG
+faiss-cpu==1.9.0.post1
+sentence-transformers==2.2.2
+
+# Data processing
+python-dotenv==1.0.0
+pydantic==2.5.0
+openpyxl==3.1.2
+
+# Utilities
+requests==2.31.0
+python-multipart==0.0.6
+jinja2==3.1.2
+
+# Additional for enhanced features
+scikit-learn==1.3.2
+plotly==5.17.0
