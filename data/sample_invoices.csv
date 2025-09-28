@@ -1,0 +1,6 @@
+invoice_id,customer_id,customer_name,customer_email,invoice_amount,issue_date,due_date,days_overdue,status,payment_history_score,last_payment_date,industry,relationship_length_months
+INV-001,CUST-101,Tech Solutions Ltd,finance@techsolutions.com,15000.00,2024-07-15,2024-08-15,34,overdue,8.5,2024-06-10,Technology,24
+INV-002,CUST-102,Global Manufacturing Co,ap@globalmanuf.com,45000.00,2024-06-20,2024-07-20,59,overdue,6.2,2024-04-15,Manufacturing,18
+INV-003,CUST-103,StartupXYZ,billing@startupxyz.com,8500.00,2024-08-01,2024-09-01,17,overdue,9.1,2024-07-25,Technology,6
+INV-004,CUST-104,Retail Chain Inc,finance@retailchain.com,32000.00,2024-05-10,2024-06-10,99,overdue,4.3,2024-02-20,Retail,36
+INV-005,CUST-105,Healthcare Systems,payments@healthsys.com,22000.00,2024-07-30,2024-08-30,19,overdue,7.8,2024-07-05,Healthcare,12
