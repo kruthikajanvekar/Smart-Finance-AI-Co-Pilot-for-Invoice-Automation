@@ -1,9 +1,0 @@
-customer_id,customer_name,communication_id,date,type,content,sentiment,response_time_hours,payment_result
-CUST-101,Tech Solutions Ltd,COMM-001,2024-08-10,email_reminder,"Gentle reminder about invoice INV-001. We understand you're busy and appreciate your business.",positive,24,paid_partial
-CUST-101,Tech Solutions Ltd,COMM-002,2024-09-05,phone_call,"Spoke with CFO about delayed payment. Cited cash flow issues but committed to pay within 2 weeks.",neutral,0,pending
-CUST-102,Global Manufacturing Co,COMM-003,2024-07-25,email_reminder,"Second reminder about overdue invoice. Please prioritize this payment.",neutral,72,no_response
-CUST-102,Global Manufacturing Co,COMM-004,2024-08-15,email_firm,"This is our final reminder before escalating to collections.",negative,0,no_response
-CUST-103,StartupXYZ,COMM-005,2024-09-10,email_reminder,"Friendly reminder about your recent invoice. Happy to discuss payment terms if needed.",positive,12,paid_full
-CUST-104,Retail Chain Inc,COMM-006,2024-06-20,email_reminder,"Payment overdue. Please remit immediately to avoid service disruption.",firm,168,paid_partial
-CUST-104,Retail Chain Inc,COMM-007,2024-07-30,legal_notice,"Final notice before legal action. Payment required within 7 days.",legal,48,payment_plan
-CUST-105,Healthcare Systems,COMM-008,2024-08-25,email_reminder,"Following up on invoice payment. Please confirm receipt and expected payment date.",neutral,36,paid_full
