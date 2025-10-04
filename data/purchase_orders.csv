@@ -1,0 +1,4 @@
+po_number,vendor_id,vendor_name,po_date,quantity,unit_price,total_amount,description,status
+PO2024001,V001,TechSupply Corp,2024-08-15,10,500.00,5000.00,IT Equipment,Approved
+PO2024002,V002,Office Solutions Ltd,2024-08-20,50,70.00,3500.00,Office Supplies,Approved  
+PO2024003,V003,Global Manufacturing,2024-08-25,5,1440.00,7200.00,Manufacturing Parts,Approved
