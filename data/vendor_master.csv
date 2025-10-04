@@ -1,0 +1,4 @@
+vendor_id,vendor_name,contact_email,phone,payment_terms,status
+V001,TechSupply Corp,payments@techsupply.com,555-0101,Net 30,Active
+V002,Office Solutions Ltd,finance@officesolutions.com,555-0102,Net 45,Active
+V003,Global Manufacturing,ap@globalmanuf.com,555-0103,Net 60,Active
