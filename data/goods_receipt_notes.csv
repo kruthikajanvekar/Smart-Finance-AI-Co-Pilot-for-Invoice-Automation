@@ -1,0 +1,4 @@
+grn_number,po_number,vendor_id,receipt_date,quantity_received,description,status
+GRN001,PO2024001,V001,2024-08-20,10,IT Equipment Received,Completed
+GRN002,PO2024002,V002,2024-08-25,48,Office Supplies Received,Completed
+GRN003,PO2024003,V003,2024-08-30,5,Manufacturing Parts Received,Completed
