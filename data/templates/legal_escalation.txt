@@ -1,0 +1,66 @@
+Subject: FINAL NOTICE - Legal Action Pending - Invoice {invoice_id}
+
+URGENT - IMMEDIATE ACTION REQUIRED
+
+{customer_name}
+Attention: Accounts Payable Department
+
+Re: Final Notice Before Legal Proceedings - Invoice {invoice_id}
+
+This is a formal final notice regarding your outstanding payment obligation.
+
+OUTSTANDING INVOICE DETAILS:
+- Invoice Number: {invoice_id}
+- Invoice Date: {issue_date}
+- Due Date: {due_date}
+- Amount Due: ${invoice_amount}
+- Days Past Due: {days_overdue}
+- Total Amount Including Late Fees: ${total_amount_with_fees}
+
+PAYMENT HISTORY:
+Despite multiple attempts to contact you regarding this overdue invoice, including:
+- Initial polite reminder on {first_reminder_date}
+- Follow-up notice on {second_reminder_date}
+- Phone attempts on {phone_contact_dates}
+
+We have not received payment nor any communication regarding this matter.
+
+IMMEDIATE ACTION REQUIRED:
+Payment must be received within 7 (seven) calendar days from the date of this notice. This is your final opportunity to resolve this matter before we proceed with the following actions:
+
+1. Engagement of a third-party collection agency
+2. Reporting to credit bureaus, which may impact your business credit rating
+3. Initiation of legal proceedings to recover the outstanding amount plus:
+   - Late payment fees
+   - Collection costs
+   - Legal fees
+   - Court costs
+   - Interest as permitted by law
+
+PAYMENT OPTIONS:
+To avoid escalation, please remit payment immediately via:
+- Wire Transfer: [Bank Details]
+- ACH Payment: [Account Details]
+- Check: [Mailing Address]
+
+If you believe this notice is in error or wish to discuss payment arrangements, you must contact us immediately at:
+
+Email: legal.collections@{company_domain}
+Phone: {legal_department_phone}
+Reference: Invoice {invoice_id}
+
+IMPORTANT: This is not a threat but a statement of our intended course of action if this matter remains unresolved. We strongly prefer to resolve this amicably and avoid legal proceedings.
+
+Please treat this matter with the urgency it requires.
+
+Sincerely,
+
+{collector_name}
+Collections Department
+{company_name}
+
+---
+LEGAL NOTICE: This communication is from a debt collector and is an attempt to collect a debt. Any information obtained will be used for that purpose. This notice complies with the Fair Debt Collection Practices Act (FDCPA).
+
+Reference Number: {reference_number}
+Date Issued: {current_date}
