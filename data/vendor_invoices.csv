@@ -1,0 +1,4 @@
+invoice_id,vendor_id,vendor_name,po_number,grn_number,invoice_date,quantity,unit_price,total_amount,description,status
+INV2024001,V001,TechSupply Corp,PO2024001,GRN001,2024-08-22,10,500.00,5000.00,IT Equipment,pending
+INV2024002,V002,Office Solutions Ltd,PO2024002,GRN002,2024-08-27,48,70.00,3360.00,Office Supplies,pending
+INV2024003,V003,Global Manufacturing,PO2024003,GRN003,2024-09-01,5,1440.00,7200.00,Manufacturing Parts,pending
