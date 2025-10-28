@@ -13,7 +13,7 @@ import re
 class VoiceFinanceAgent:
     def __init__(self, invoice_agent):
         self.invoice_agent = invoice_agent
-        genai.api_key = Config.OPENAI_API_KEY
+        # API key configured in config.py_API_KEY
         
     def process_voice_command(self, transcript: str) -> Dict:
         """Process voice command and route to appropriate action"""

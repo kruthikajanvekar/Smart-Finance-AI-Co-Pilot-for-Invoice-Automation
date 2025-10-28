@@ -4,11 +4,11 @@ from typing import List, Dict, Optional
 import google.generativeai as genai
 from config import Config
 
-genai.configure(api_key=Config.GEMINI_API_KEY)
+genai.configure(api_key=Config.GOOGLE_API_KEY)
 
 class InvoiceFollowupAgent:
     def __init__(self):
-        genai.api_key = Config.OPENAI_API_KEY
+        # API key configured in config.py
         self.config = Config()
         
     def load_invoice_data(self) -> pd.DataFrame:

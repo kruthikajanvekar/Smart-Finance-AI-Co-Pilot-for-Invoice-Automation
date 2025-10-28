@@ -4,10 +4,11 @@ import pandas as pd
 import sys
 import os
 
-# Add src directory to path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+# Add parent directory to path to find src
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src.agents.invoice_followup_agent import InvoiceFollowupAgent
+
 from config import Config
 
 def main():

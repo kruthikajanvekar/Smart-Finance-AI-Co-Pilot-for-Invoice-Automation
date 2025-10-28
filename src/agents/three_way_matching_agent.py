@@ -12,7 +12,7 @@ class ThreeWayMatchingAgent:
     """AI-powered 3-way matching for Purchase Orders, Goods Receipt Notes, and Invoices"""
     
     def __init__(self):
-        genai.api_key = Config.GENAI_API_KEY
+        genai.api_key = Config.GOOGLE_API_KEY
         self.logger = logging.getLogger(__name__)
         self.tolerance_config = {
             'quantity_tolerance_percent': 5.0,  # 5% tolerance

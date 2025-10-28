@@ -18,9 +18,9 @@ class GeminiClient:
         Initialize Gemini client
         
         Args:
-            api_key: Google AI API key (defaults to Config.GEMINI_API_KEY)
+            api_key: Google AI API key (defaults to Config.GOOGLE_API_KEY)
         """
-        self.api_key = api_key or Config.GEMINI_API_KEY
+        self.api_key = api_key or Config.GOOGLE_API_KEY
         genai.configure(api_key=self.api_key)
         self.logger = logging.getLogger(__name__)
         
