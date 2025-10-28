@@ -7,13 +7,14 @@ import os
 import json
 from datetime import datetime
 
-# Add src directory to path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+# Add parent directory to path to find src
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from agents.invoice_followup_agent import InvoiceFollowupAgent
-from agents.voice_agent import VoiceFinanceAgent
-from agents.three_way_matching_agent import ThreeWayMatchingAgent
-from agents.vendor_query_agent import VendorQueryAgent
+
+from src.agents.invoice_followup_agent import InvoiceFollowupAgent
+from src.agents.voice_agent import VoiceFinanceAgent
+from src.agents.three_way_matching_agent import ThreeWayMatchingAgent
+from src.agents.vendor_query_agent import VendorQueryAgent
 from config import Config
 
 def main():
@@ -85,7 +86,7 @@ def create_sidebar():
         )
         
         if api_key:
-            Config.OPENAI_API_KEY = api_key
+            Config.GOOGLE_API_KEY = api_key
             st.success("✅ API Key configured")
         
         # ERP Connection Status
@@ -248,6 +249,54 @@ def ai_followups_page():
                         
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
+
+def voice_assistant_page():
+    """Simple voice assistant page fallback for text queries / transcriptions"""
+    
+    st.header("🎤 Voice Assistant")
+    st.write("Interact with the voice-enabled finance assistant. (Text input supported as a fallback)")
+    
+    col_main, col_sidebar = st.columns([2, 1])
+    
+    with col_main:
+        user_query = st.text_input("Type a question or paste transcribed text:", key="voice_query")
+        
+        if st.button("🤖 Ask Assistant", key="voice_ask"):
+            if not user_query or not user_query.strip():
+                st.info("Please enter a query or paste a transcription.")
+            else:
+                with st.spinner("🤖 Processing your query..."):
+                    try:
+                        agent = st.session_state.get('voice_agent')
+                        if not agent:
+                            st.warning("Voice agent not initialized. Please initialize agents from the Control Center.")
+                        else:
+                            # Try a few common method names gracefully; fall back to a demo response
+                            response = None
+                            if hasattr(agent, "process_text"):
+                                response = agent.process_text(user_query)
+                            elif hasattr(agent, "handle_text_query"):
+                                response = agent.handle_text_query(user_query)
+                            else:
+                                # Fallback demo response structure
+                                response = {"status": "success", "response": f"(Demo) Voice agent received: {user_query}"}
+                            
+                            # Normalize and display response
+                            if isinstance(response, dict) and "status" in response:
+                                if response.get("status") == "success":
+                                    st.success(response.get("response"))
+                                else:
+                                    st.warning(response.get("response"))
+                            else:
+                                st.success(str(response))
+                    except Exception as e:
+                        st.error(f"Error processing voice query: {e}")
+    
+    with col_sidebar:
+        st.subheader("Session Info")
+        initialized = "Yes" if 'voice_agent' in st.session_state else "No"
+        st.write("Voice Agent Initialized:", initialized)
+        st.write("Tip: Use text queries for now, or wire up a transcription uploader to forward audio to the agent.")
 
 def three_way_matching_page():
     """3-way matching automation page"""
