@@ -80,16 +80,18 @@ class InvoiceFollowupAgent:
         """
         
         try:
-            response = genai.chat.create(
-                model=Config.GEMINI_MODEL,
-                messages=[
-                    {"author": "system", "content": "You are a professional finance communication specialist."},
-                    {"author": "user", "content": prompt}
+            model= genai.GenerativeModel(Config.GEMINI_MODEL)
+            response = model.generate_content(
+                [
+                     "You are a professional finance communication specialist.",
+                     prompt
                     ],
-                temperature=0.7,
-                max_output_tokens=300,
-                )
-            return response.last
+                generation_config={
+                    "temperature": 0.7,
+                    "max_output_tokens": 600
+                }
+            )
+            return response.text
 
             # return response.choices[0].message.content.strip()
             
