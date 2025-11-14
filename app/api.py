@@ -8,8 +8,7 @@ import os
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from agents.invoice_followup_agent import InvoiceFollowupAgent
-from agents.voice_agent import VoiceFinanceAgent
+from src.agents.invoice_followup_agent import InvoiceFollowupAgent
 from agents.vendor_query_agent import VendorQueryAgent
 
 # Initialize FastAPI app
@@ -30,7 +29,6 @@ app.add_middleware(
 
 # Initialize agents
 invoice_agent = InvoiceFollowupAgent()
-voice_agent = VoiceFinanceAgent(invoice_agent)
 vendor_agent = VendorQueryAgent()
 
 # Pydantic models for request/response
@@ -43,14 +41,6 @@ class InvoiceFollowupResponse(BaseModel):
     status: str
     count: int
     followups: List[Dict]
-
-class VoiceQueryRequest(BaseModel):
-    query: str = Field(..., description="Voice command or query text")
-
-class VoiceQueryResponse(BaseModel):
-    action: str
-    response: str
-    data: Optional[Dict] = None
 
 class VendorQueryRequest(BaseModel):
     query: str = Field(..., description="Vendor query text")
@@ -71,7 +61,6 @@ async def root():
         "message": "Finance AI Co-Pilot API v1.0.0",
         "endpoints": [
             "/invoices/followups",
-            "/voice/query",
             "/vendor/query",
             "/health"
         ]
@@ -84,7 +73,6 @@ async def health_check():
         "status": "healthy",
         "agents": {
             "invoice_agent": "operational",
-            "voice_agent": "operational",
             "vendor_agent": "operational"
         },
         "timestamp": pd.Timestamp.now().isoformat()
@@ -120,28 +108,7 @@ async def generate_followups(request: InvoiceFollowupRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/voice/query", response_model=VoiceQueryResponse)
-async def process_voice_query(request: VoiceQueryRequest):
-    """
-    Process natural language voice commands
-    
-    Examples:
-    - "List top 5 overdue invoices"
-    - "Generate 3 payment reminders"
-    - "What's the payment status?"
-    """
-    
-    try:
-        result = voice_agent.process_voice_command(request.query)
-        
-        return VoiceQueryResponse(
-            action=result['action'],
-            response=result['response'],
-            data=result.get('data')
-        )
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/vendor/query", response_model=VendorQueryResponse)
 async def process_vendor_query(request: VendorQueryRequest):

@@ -6,7 +6,8 @@ load_dotenv()
 class Config:
     # Gemini Configuration
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-pro")
+    # Use a lighter default model to reduce token usage on free tier; override via GEMINI_MODEL env var
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "models/gemini-2.1")
     
     # Application Settings
     APP_NAME = "Finance AI Co-Pilot"
@@ -31,3 +32,7 @@ class Config:
     OVERDUE_THRESHOLD_DAYS = 30
     FIRM_REMINDER_DAYS = 45
     LEGAL_ESCALATION_DAYS = 60
+    
+    # Free tier settings (set FREE_TIER_MODE=false in .env to disable)
+    FREE_TIER_MODE = os.getenv("FREE_TIER_MODE", "true").lower() == "true"
+    FREE_TIER_CAP = int(os.getenv("FREE_TIER_CAP", "1"))

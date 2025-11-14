@@ -10,7 +10,6 @@ Contains specialized AI agents for finance automation:
 
 # Make imports cleaner
 from .invoice_followup_agent import InvoiceFollowupAgent
-from .voice_agent import VoiceFinanceAgent
 from .three_way_matching_agent import ThreeWayMatchingAgent
 from .vendor_query_agent import VendorQueryAgent
 

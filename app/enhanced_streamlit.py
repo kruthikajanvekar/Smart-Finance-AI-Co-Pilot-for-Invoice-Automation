@@ -12,7 +12,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 
 from src.agents.invoice_followup_agent import InvoiceFollowupAgent
-from src.agents.voice_agent import VoiceFinanceAgent
 from src.agents.three_way_matching_agent import ThreeWayMatchingAgent
 from src.agents.vendor_query_agent import VendorQueryAgent
 from config import Config
@@ -45,9 +44,6 @@ def init_agents():
     if 'invoice_agent' not in st.session_state:
         st.session_state.invoice_agent = InvoiceFollowupAgent()
     
-    if 'voice_agent' not in st.session_state:
-        st.session_state.voice_agent = VoiceFinanceAgent(st.session_state.invoice_agent)
-    
     if 'matching_agent' not in st.session_state:
         st.session_state.matching_agent = ThreeWayMatchingAgent()
     
@@ -67,7 +63,6 @@ def create_sidebar():
         [
             "🏠 Executive Dashboard",
             "🤖 AI Follow-ups", 
-            "🎤 Voice Assistant",
             "⚖️ 3-Way Matching",
             "🏢 Vendor Portal",
             "🔌 ERP Integration",
@@ -122,8 +117,6 @@ def route_pages():
         executive_dashboard()
     elif page == "🤖 AI Follow-ups":
         ai_followups_page()
-    elif page == "🎤 Voice Assistant":
-        voice_assistant_page()
     elif page == "⚖️ 3-Way Matching":
         three_way_matching_page()
     elif page == "🏢 Vendor Portal":
@@ -218,7 +211,15 @@ def ai_followups_page():
     with col1:
         st.subheader("⚙️ Smart Configuration")
         
-        num_followups = st.slider("Number of Follow-ups", 1, 20, 5)
+        num_followups = st.slider("Number of Follow-ups", 1, 20, 1)
+        generation_mode = st.radio("Generation Mode:", ["Template (instant)", "LLM (may be slow / quota)"], index=0)
+        use_template_only = generation_mode.startswith("Template")
+        # Warn users about free-tier caps when selecting more than allowed
+        if getattr(Config, "FREE_TIER_MODE", False) and num_followups > getattr(Config, "FREE_TIER_CAP", 1):
+            st.warning(
+                f"Free-tier mode is active: requests will be capped to {Config.FREE_TIER_CAP} follow-up(s) per run. "
+                "If you have billing enabled, set FREE_TIER_MODE=false in your .env to disable this cap."
+            )
         
         # AI-powered filters
         st.write("**🎯 AI Targeting:**")
@@ -239,7 +240,7 @@ def ai_followups_page():
             with st.spinner("🧠 AI is analyzing customer behavior patterns..."):
                 try:
                     # Enhanced follow-up generation with new parameters
-                    followups = st.session_state.invoice_agent.generate_batch_followups(num_followups)
+                    followups = st.session_state.invoice_agent.generate_batch_followups(num_followups, use_template_only=use_template_only)
                     
                     if followups:
                         st.success(f"✅ Generated {len(followups)} smart follow-ups!")
@@ -249,54 +250,6 @@ def ai_followups_page():
                         
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
-
-def voice_assistant_page():
-    """Simple voice assistant page fallback for text queries / transcriptions"""
-    
-    st.header("🎤 Voice Assistant")
-    st.write("Interact with the voice-enabled finance assistant. (Text input supported as a fallback)")
-    
-    col_main, col_sidebar = st.columns([2, 1])
-    
-    with col_main:
-        user_query = st.text_input("Type a question or paste transcribed text:", key="voice_query")
-        
-        if st.button("🤖 Ask Assistant", key="voice_ask"):
-            if not user_query or not user_query.strip():
-                st.info("Please enter a query or paste a transcription.")
-            else:
-                with st.spinner("🤖 Processing your query..."):
-                    try:
-                        agent = st.session_state.get('voice_agent')
-                        if not agent:
-                            st.warning("Voice agent not initialized. Please initialize agents from the Control Center.")
-                        else:
-                            # Try a few common method names gracefully; fall back to a demo response
-                            response = None
-                            if hasattr(agent, "process_text"):
-                                response = agent.process_text(user_query)
-                            elif hasattr(agent, "handle_text_query"):
-                                response = agent.handle_text_query(user_query)
-                            else:
-                                # Fallback demo response structure
-                                response = {"status": "success", "response": f"(Demo) Voice agent received: {user_query}"}
-                            
-                            # Normalize and display response
-                            if isinstance(response, dict) and "status" in response:
-                                if response.get("status") == "success":
-                                    st.success(response.get("response"))
-                                else:
-                                    st.warning(response.get("response"))
-                            else:
-                                st.success(str(response))
-                    except Exception as e:
-                        st.error(f"Error processing voice query: {e}")
-    
-    with col_sidebar:
-        st.subheader("Session Info")
-        initialized = "Yes" if 'voice_agent' in st.session_state else "No"
-        st.write("Voice Agent Initialized:", initialized)
-        st.write("Tip: Use text queries for now, or wire up a transcription uploader to forward audio to the agent.")
 
 def three_way_matching_page():
     """3-way matching automation page"""
@@ -553,27 +506,29 @@ def display_enhanced_followups(followups):
             with col_email:
                 st.text_area(
                     "Generated Email:",
-                    followup['generated_email'],
+                    str(followup.get('generated_email', '')),
                     height=150,
                     key=f"email_{i}"
                 )
                 
-                # Action buttons
-                col_a, col_b, col_c = st.columns(3)
-                with col_a:
-                    if st.button("✅ Approve", key=f"approve_{i}"):
-                        st.success("Approved!")
-                with col_b:
-                    if st.button("📤 Send", key=f"send_{i}"):
-                        st.success("Sent!")
-                with col_c:
-                    if st.button("⏰ Schedule", key=f"schedule_{i}"):
-                        st.info("Scheduled!")
+            # Place action buttons in a single row at the expander level (avoids deep column nesting)
+            action_cols = st.columns(3)
+            with action_cols[0]:
+                if st.button("✅ Approve", key=f"approve_{i}"):
+                    st.success("Approved!")
+            with action_cols[1]:
+                if st.button("📤 Send", key=f"send_{i}"):
+                    st.success("Sent!")
+            with action_cols[2]:
+                if st.button("⏰ Schedule", key=f"schedule_{i}"):
+                    st.info("Scheduled!")
             
             with col_insights:
                 st.write("**AI Insights:**")
                 st.write(f"• Severity: {followup['severity']}")
                 st.write(f"• Priority: {followup['priority_score']:.0f}")
+                source = followup.get('generated_by', 'UNKNOWN')
+                st.write(f"• Generated by: {source}")
                 
                 if followup.get('ai_insights'):
                     insights = followup['ai_insights']
