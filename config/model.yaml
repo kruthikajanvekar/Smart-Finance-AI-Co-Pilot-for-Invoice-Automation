@@ -1,0 +1,41 @@
+model:
+  name: invoice_risk_model
+  type: classification
+  framework: sklearn
+  algorithm: logistic_regression
+
+training:
+  test_size: 0.2
+  random_state: 42
+  cross_validation_folds: 5
+
+hyperparameters:
+  C: 1.0
+  penalty: l2
+  solver: lbfgs
+  max_iter: 1000
+
+features:
+  numerical:
+    - invoice_amount
+    - days_overdue
+    - payment_history_score
+
+  categorical:
+    - industry
+    - customer_region
+
+target:
+  column: risk_flag
+  positive_class: high_risk
+
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1_score
+
+artifacts:
+  model_path: artifacts/models/
+  metrics_path: artifacts/metrics/
