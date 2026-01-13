@@ -6,6 +6,9 @@ import pickle
 import os
 from typing import List, Dict, Tuple
 from config import Config
+from src.logger.logger import get_logger
+logger = get_logger(__name__)
+
 
 class CustomerRAGEngine:
     def __init__(self):
