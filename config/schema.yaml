@@ -1,0 +1,47 @@
+version: 1
+
+invoice_schema:
+  invoice_id:
+    type: string
+    required: true
+
+  customer_id:
+    type: string
+    required: true
+
+  customer_name:
+    type: string
+    required: true
+
+  customer_email:
+    type: string
+    required: false
+
+  invoice_amount:
+    type: float
+    min: 0
+    required: true
+
+  status:
+    type: string
+    allowed:
+      - paid
+      - overdue
+      - pending
+
+  days_overdue:
+    type: integer
+    min: 0
+
+  payment_history_score:
+    type: float
+    min: 0
+    max: 10
+
+  issue_date:
+    type: datetime
+
+  due_date:
+    type: datetime
+
+
