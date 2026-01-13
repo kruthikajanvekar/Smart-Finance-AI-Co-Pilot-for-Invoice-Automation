@@ -1,0 +1,36 @@
+rag:
+  enabled: true
+
+retrieval:
+  type: structured
+  source:
+    - invoices
+    - vendors
+    - communication_history
+
+  strategy:
+    mode: exact_match
+    fields:
+      - invoice_id
+      - vendor_id
+      - customer_email
+
+  top_k: 5
+
+augmentation:
+  max_context_tokens: 800
+  include_metadata: true
+  format: bullet_points
+
+generation:
+  model: gemini-pro
+  temperature: 0.4
+  max_tokens: 250
+
+fallback:
+  enabled: true
+  use_template: true
+
+logging:
+  log_prompts: true
+  log_responses: true
