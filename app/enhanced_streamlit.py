@@ -6,6 +6,9 @@ import sys
 import os
 import json
 from datetime import datetime
+from src.logger.logger import get_logger
+logger = get_logger(__name__)
+
 
 # Add parent directory to path to find src
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -18,8 +21,8 @@ from config import Config
 
 def main():
     st.set_page_config(
-        page_title="Finance AI Co-Pilot Pro",
-        page_icon="💰",
+        page_title="CatalystAI - Invoice Automation",
+        page_icon="⚡",
         layout="wide",
         initial_sidebar_state="expanded"
     )
@@ -31,8 +34,8 @@ def main():
     create_sidebar()
     
     # Header
-    st.title("💰 Finance AI Co-Pilot Pro")
-    st.markdown("*Complete Invoice-to-Cash & Procure-to-Pay Automation*")
+    st.title("⚡ CatalystAI")
+    st.markdown("*AI-Powered Invoice Automation & Collections*")
     st.markdown("---")
     
     # Route to pages
@@ -74,23 +77,36 @@ def create_sidebar():
     
     # API Configuration
     with st.sidebar.expander("🔑 API Configuration", expanded=False):
-        api_key = st.text_input(
-            "OpenAI API Key", 
+        st.markdown("### 🤖 Google Gemini API")
+        
+        api_key_input = st.text_input(
+            "Google API Key", 
             type="password",
-            help="Required for AI features"
+            value=Config.GOOGLE_API_KEY if Config.GOOGLE_API_KEY else "",
+            help="Get from: https://aistudio.google.com/app/apikey"
         )
         
-        if api_key:
-            Config.GOOGLE_API_KEY = api_key
-            st.success("✅ API Key configured")
+        if api_key_input:
+            Config.GOOGLE_API_KEY = api_key_input
+            st.success("✅ Google API Key configured")
+        elif Config.GOOGLE_API_KEY:
+            st.success("✅ API Key loaded from environment (.env)")
+        else:
+            st.warning("⚠️ No API Key found. Set GOOGLE_API_KEY in .env or enter here")
         
-        # ERP Connection Status
-        st.markdown("**ERP Connections:**")
-        st.info("📱 QuickBooks: Not Connected")
-        st.info("🏭 SAP: Not Connected")
+        st.markdown("---")
+        st.markdown("### 📊 Current Configuration")
+        col_a, col_b = st.columns(2)
+        with col_a:
+            st.metric("🔥 Free Tier", "✅ Enabled" if Config.FREE_TIER_MODE else "❌ Disabled")
+        with col_b:
+            st.metric("⏱️ Request Cap", f"{Config.FREE_TIER_CAP}/min")
         
-        if st.button("🔄 Test Connections"):
-            st.info("Connection testing feature coming soon!")
+        st.markdown("---")
+        st.markdown("### 🔌 ERP Connections")
+        st.info("📱 QuickBooks: Not Connected (Configure in 🔌 ERP Integration)")
+        st.info("🏭 SAP: Not Connected (Configure in 🔌 ERP Integration)")
+
     
     # Quick Stats
     with st.sidebar.expander("📈 Quick Stats", expanded=True):
@@ -333,9 +349,7 @@ def vendor_portal_page():
     
     st.header("🏢 Vendor Portal & Query Assistant")
     
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
+    with st.container():
         st.subheader("💬 Ask Our AI Assistant")
         
         # Vendor identification
@@ -358,36 +372,15 @@ def vendor_portal_page():
                         
                         st.subheader("🤖 Assistant Response:")
                         
-                        if response['status'] == 'success':
-                            st.success(response['response'])
+                        if response.get('success', False):
+                            st.success(response.get('response', 'No response'))
                         else:
-                            st.warning(response['response'])
+                            st.warning(response.get('response', 'Unable to process query'))
                             
                     except Exception as e:
                         st.error(f"Error processing query: {str(e)}")
     
-    with col2:
-        st.subheader("📊 Vendor Query Analytics")
-        
-        try:
-            stats = st.session_state.vendor_agent.get_vendor_statistics()
-            
-            # Key metrics
-            col_a, col_b = st.columns(2)
-            with col_a:
-                st.metric("Queries Today", stats['total_queries_today'])
-                st.metric("Auto-Resolved", f"{stats['auto_resolved_rate']:.1f}%")
-            with col_b:
-                st.metric("Avg Response", f"{stats['avg_response_time_seconds']:.1f}s")
-                st.metric("Monthly Savings", f"${stats['cost_savings_monthly']:,}")
-            
-            # Query distribution
-            st.subheader("📈 Query Types")
-            for query_type in stats['top_query_types']:
-                st.write(f"• {query_type['type'].title()}: {query_type['count']} queries")
-                
-        except Exception as e:
-            st.error("Unable to load analytics")
+
 
 def erp_integration_page():
     """ERP integration management"""
@@ -402,30 +395,36 @@ def erp_integration_page():
         erp_systems = [
             {"name": "QuickBooks Online", "status": "Not Connected", "color": "red"},
             {"name": "SAP Business One", "status": "Not Connected", "color": "red"},
-            {"name": "NetSuite", "status": "Available", "color": "blue"},
-            {"name": "Xero", "status": "Available", "color": "blue"},
         ]
         
         for erp in erp_systems:
             with st.expander(f"📱 {erp['name']} - {erp['status']}"):
-                if erp['status'] == "Not Connected":
-                    st.info("Configure your credentials to connect")
+                st.info("Configure your credentials to connect")
+                
+                if erp['name'] == "QuickBooks Online":
+                    client_id = st.text_input("Client ID", key=f"qb_client")
+                    client_secret = st.text_input("Client Secret", type="password", key=f"qb_secret")
                     
-                    if erp['name'] == "QuickBooks Online":
-                        client_id = st.text_input("Client ID", key=f"qb_client")
-                        client_secret = st.text_input("Client Secret", type="password", key=f"qb_secret")
-                        
-                        if st.button(f"Connect to {erp['name']}", key=f"connect_qb"):
-                            st.success("Connection successful! (Demo)")
+                    if st.button(f"Connect to {erp['name']}", key=f"connect_qb"):
+                        st.success("Connection successful! (Demo)")
+                
+                elif erp['name'] == "SAP Business One":
+                    server_url = st.text_input("Server URL", key="sap_url")
+                    database = st.text_input("Database", key="sap_db") 
                     
-                    elif erp['name'] == "SAP Business One":
-                        server_url = st.text_input("Server URL", key="sap_url")
-                        database = st.text_input("Database", key="sap_db") 
-                        
-                        if st.button(f"Connect to {erp['name']}", key="connect_sap"):
-                            st.success("Connection successful! (Demo)")
-                else:
-                    st.info("Click to configure connection")
+                    if st.button(f"Connect to {erp['name']}", key="connect_sap"):
+                        st.success("Connection successful! (Demo)")
+        
+        # Coming Soon Section
+        st.markdown("---")
+        st.subheader("🚀 Coming Soon")
+        coming_soon = [
+            {"name": "NetSuite", "icon": "☁️"},
+            {"name": "Xero", "icon": "💼"},
+        ]
+        for erp in coming_soon:
+            st.info(f"{erp['icon']} {erp['name']} - Integration coming soon")
+
     
     with col2:
         st.subheader("🔄 Data Synchronization")
@@ -489,11 +488,30 @@ def settings_page():
     with col2:
         st.subheader("🤖 AI Configuration")
         
-        model_choice = st.selectbox("AI Model", ["gpt-4", "gpt-3.5-turbo"])
-        temperature = st.slider("AI Creativity", 0.0, 1.0, 0.7)
+        model_choice = st.selectbox(
+            "AI Model",
+            [
+                "gemini-2.5-pro (Recommended)",
+                "gemini-2.1-flash",
+                "gemini-2.0-pro"
+            ],
+            help="Free tier uses gemini-2.1-flash. Pro tier unlocks 2.5-pro for better quality."
+        )
         
+        if "2.5-pro" in model_choice:
+            st.info("💡 Best for complex invoice analysis and personalized emails")
+        elif "2.1-flash" in model_choice:
+            st.info("⚡ Faster responses, ideal for free-tier API quotas")
+        
+        temperature = st.slider(
+            "AI Creativity", 
+            0.0, 1.0, 0.4,
+            help="Lower = More consistent. Higher = More creative. (Default: 0.4 for finance)"
+        )
+        
+        st.markdown("---")
         st.subheader("ℹ️ System Info")
-        st.info(f"**Version:** {Config.VERSION}\n**Status:** ✅ Operational")
+        st.info(f"**Version:** {Config.VERSION}\n**Status:** ✅ Operational\n**LLM:** Google Gemini\n**Free Tier:** {'✅ Enabled' if Config.FREE_TIER_MODE else '❌ Disabled'}")
 
 def display_enhanced_followups(followups):
     """Display enhanced follow-up results"""
