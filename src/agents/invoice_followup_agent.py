@@ -5,6 +5,9 @@ import google.generativeai as genai
 from config import Config
 import time
 from google.api_core.exceptions import ResourceExhausted
+from src.logger.logger import get_logger
+logger = get_logger(__name__)
+
 
 genai.configure(api_key=Config.GOOGLE_API_KEY)
 
